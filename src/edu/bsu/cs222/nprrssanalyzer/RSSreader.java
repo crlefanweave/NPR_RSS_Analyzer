@@ -7,12 +7,20 @@ public class RSSreader {
     public String readRss(String url) throws IOException {
         URL rssURL = new URL(url);
         BufferedReader inputReader = new BufferedReader(new InputStreamReader(rssURL.openStream()));
-        inputReader.close();
         String srcCode = "";
-        String line;
-        while((line = inputReader.readLine()) != null){
-
+        String currentLine;
+        while((currentLine = inputReader.readLine()) != null) {
+            if (currentLine.contains("<title>")) {
+                System.out.println(currentLine);
+                int initialPosition = currentLine.indexOf("<title>");
+                String temporaryString = currentLine.substring(initialPosition);
+                temporaryString.replace("<title>", "");
+                int finalPosition = temporaryString.indexOf("</title>");
+                temporaryString = temporaryString.substring(0, finalPosition);
+                srcCode += temporaryString + "\n";
+            }
         }
+        inputReader.close();
         return srcCode;
     }
 }
